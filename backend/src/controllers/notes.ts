@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import NoteModel from "../models/note";
 import { assertIsDefined } from "../util/assertIsDefined";
 
-export const getNotes: RequestHandler = async (req, res, next) => {
+export const getNotes: RequestHandler = async (req:any, res, next) => {
     const authenticatedUserId = req.session.userId;
 
     try {
@@ -17,7 +17,7 @@ export const getNotes: RequestHandler = async (req, res, next) => {
     }
 };
 
-export const getNote: RequestHandler = async (req, res, next) => {
+export const getNote: RequestHandler = async (req:any, res, next) => {
     const noteId = req.params.noteId;
     const authenticatedUserId = req.session.userId;
 
@@ -49,7 +49,7 @@ interface CreateNoteBody {
     text?: string,
 }
 
-export const createNote: RequestHandler<unknown, unknown, CreateNoteBody, unknown> = async (req, res, next) => {
+export const createNote: RequestHandler<unknown, unknown, CreateNoteBody, unknown> = async (req:any, res, next) => {
     const title = req.body.title;
     const text = req.body.text;
     const authenticatedUserId = req.session.userId;
@@ -82,7 +82,7 @@ interface UpdateNoteBody {
     text?: string,
 }
 
-export const updateNote: RequestHandler<UpdateNoteParams, unknown, UpdateNoteBody, unknown> = async (req, res, next) => {
+export const updateNote: RequestHandler<UpdateNoteParams, unknown, UpdateNoteBody, unknown> = async (req:any, res, next) => {
     const noteId = req.params.noteId;
     const newTitle = req.body.title;
     const newText = req.body.text;
@@ -120,7 +120,7 @@ export const updateNote: RequestHandler<UpdateNoteParams, unknown, UpdateNoteBod
     }
 };
 
-export const deleteNote: RequestHandler = async (req, res, next) => {
+export const deleteNote: RequestHandler = async (req:any, res, next) => {
     const noteId = req.params.noteId;
     const authenticatedUserId = req.session.userId;
 

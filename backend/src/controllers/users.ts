@@ -3,7 +3,7 @@ import createHttpError from "http-errors";
 import UserModel from "../models/user";
 import bcrypt from "bcrypt";
 
-export const getAuthenticatedUser: RequestHandler = async (req, res, next) => {
+export const getAuthenticatedUser: RequestHandler = async (req:any, res, next) => {
     try {
         const user = await UserModel.findById(req.session.userId).select("+email").exec();
         res.status(200).json(user);
@@ -18,7 +18,7 @@ interface SignUpBody {
     password?: string,
 }
 
-export const signUp: RequestHandler<unknown, unknown, SignUpBody, unknown> = async (req, res, next) => {
+export const signUp: RequestHandler<unknown, unknown, SignUpBody, unknown> = async (req:any, res, next) => {
     const username = req.body.username;
     const email = req.body.email;
     const passwordRaw = req.body.password;
@@ -61,7 +61,7 @@ interface LoginBody {
     password?: string,
 }
 
-export const login: RequestHandler<unknown, unknown, LoginBody, unknown> = async (req, res, next) => {
+export const login: RequestHandler<unknown, unknown, LoginBody, unknown> = async (req:any, res, next) => {
     const username = req.body.username;
     const password = req.body.password;
 
