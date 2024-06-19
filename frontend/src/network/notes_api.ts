@@ -1,10 +1,17 @@
 import { ConflictError, UnauthorizedError } from "../errors/http_errors";
 import { Note } from "../models/note";
 import { User } from "../models/user";
+import axios from 'axios';
 const base_url = "https://notes-manager-fsv1.onrender.com"
 
 async function fetchData(input: RequestInfo, init?: RequestInit) {
-    const response = await fetch(base_url + input, init);
+    // const response = await fetch(base_url + input, init);
+    const response = await axios({
+            url: base_url + input,
+            method: init.method,
+            headers: init.headers,
+            data: init.data,
+        });
     if (response.ok) {
         return response;
     } else {
