@@ -8,13 +8,17 @@ import session from "express-session";
 import env from "./util/validateEnv";
 import MongoStore from "connect-mongo";
 import { requiresAuth } from "./middleware/auth";
+import cors from "cors";
 
 const app = express();
-
 app.use(morgan("dev"));
 
 app.use(express.json());
-
+// Configure CORS to allow credentials
+app.use(cors({
+    origin: 'https://notes-manager-mini.vercel.app/',  // Your frontend URL
+    credentials: true,
+}));
 app.use(session({
     secret: env.SESSION_SECRET,
     resave: false,

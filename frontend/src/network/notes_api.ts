@@ -1,35 +1,39 @@
 import { ConflictError, UnauthorizedError } from "../errors/http_errors";
 import { Note } from "../models/note";
 import { User } from "../models/user";
-import axios from 'axios';
-const base_url = "https://notes-manager-fsv1.onrender.com"
+import axios, { AxiosRequestConfig } from 'axios';
+axios.defaults.withCredentials = true;
+const base_url = "https://notes-manager-fsv1.onrender.com";
 
-async function fetchData(input: RequestInfo, init?: RequestInit) {
-    // const response = await fetch(base_url + input, init);
-    const response = await axios({
+async function fetchData(input: string, init: RequestInit = {}): Promise<any> {
+    try {
+        const config: AxiosRequestConfig = {
             url: base_url + input,
             method: init.method,
-            headers: init.headers,
-            data: init.data,
-        });
-    if (response.ok) {
-        return response;
-    } else {
-        const errorBody = await response.json();
-        const errorMessage = errorBody.error;
-        if (response.status === 401) {
-            throw new UnauthorizedError(errorMessage);
-        } else if (response.status === 409) {
-            throw new ConflictError(errorMessage);
-        } else {
-            throw Error("Request failed with status: " + response.status + " message: " + errorMessage);
+            headers: init.headers ? Object.fromEntries(new Headers(init.headers)) : undefined,
+            data: init.body,
+        };
+
+        const response = await axios(config);
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+            const errorMessage = error.response.data.error;
+            if (error.response.status === 401) {
+                throw new UnauthorizedError(errorMessage);
+            } else if (error.response.status === 409) {
+                throw new ConflictError(errorMessage);
+            } else {
+                throw new Error("Request failed with status: " + error.response.status + " message: " + errorMessage);
+            }
         }
+        throw error;
     }
 }
 
 export async function getLoggedInUser(): Promise<User> {
     const response = await fetchData("/api/users", { method: "GET" });
-    return response.json();
+    return response;
 }
 
 export interface SignUpCredentials {
@@ -39,15 +43,14 @@ export interface SignUpCredentials {
 }
 
 export async function signUp(credentials: SignUpCredentials): Promise<User> {
-    const response = await fetchData("/api/users/signup",
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(credentials),
-        });
-    return response.json();
+    const response = await fetchData("/api/users/signup", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(credentials),
+    });
+    return response;
 }
 
 export interface LoginCredentials {
@@ -56,15 +59,14 @@ export interface LoginCredentials {
 }
 
 export async function login(credentials: LoginCredentials): Promise<User> {
-    const response = await fetchData("/api/users/login",
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(credentials),
-        });
-    return response.json();
+    const response = await fetchData("/api/users/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(credentials),
+    });
+    return response;
 }
 
 export async function logout() {
@@ -73,7 +75,7 @@ export async function logout() {
 
 export async function fetchNotes(): Promise<Note[]> {
     const response = await fetchData("/api/notes", { method: "GET" });
-    return response.json();
+    return response;
 }
 
 export interface NoteInput {
@@ -82,29 +84,27 @@ export interface NoteInput {
 }
 
 export async function createNote(note: NoteInput): Promise<Note> {
-    const response = await fetchData("/api/notes",
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(note),
-        });
-    return response.json();
+    const response = await fetchData("/api/notes", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(note),
+    });
+    return response;
 }
 
 export async function updateNote(noteId: string, note: NoteInput): Promise<Note> {
-    const response = await fetchData("/api/notes/" + noteId,
-        {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(note),
-        });
-    return response.json();
+    const response = await fetchData(`/api/notes/${noteId}`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(note),
+    });
+    return response;
 }
 
 export async function deleteNote(noteId: string) {
-    await fetchData("/api/notes/" + noteId, { method: "DELETE" });
+    await fetchData(`/api/notes/${noteId}`, { method: "DELETE" });
 }
