@@ -25,7 +25,6 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     proxy: true, // Required for Heroku & Digital Ocean (regarding X-Forwarded-For)
-    name: 'MyCoolWebAppCookieName', // This needs to be unique per-host.
     cookie: {
       maxAge: 60 * 60 * 1000, // Example: 1 hour
       secure: true, // Ensure secure cookie in HTTPS
