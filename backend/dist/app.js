@@ -38,9 +38,13 @@ const connect_mongo_1 = __importDefault(require("connect-mongo"));
 const auth_1 = require("./middleware/auth");
 const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
-app.use((0, cors_1.default)());
 app.use((0, morgan_1.default)("dev"));
 app.use(express_1.default.json());
+// Configure CORS to allow credentials
+app.use((0, cors_1.default)({
+    origin: 'https://notes-manager-aemh.onrender.com',
+    credentials: true,
+}));
 app.use((0, express_session_1.default)({
     secret: validateEnv_1.default.SESSION_SECRET,
     resave: false,
