@@ -3,7 +3,7 @@ import { Note } from "../models/note";
 import { User } from "../models/user";
 import axios, { AxiosRequestConfig } from 'axios';
 axios.defaults.withCredentials = true;
-const base_url = "https://notes-manager-fsv1.onrender.com";
+const base_url = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 async function fetchData(input: string, init: RequestInit = {}): Promise<any> {
     try {
