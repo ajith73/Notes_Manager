@@ -16,7 +16,7 @@ app.use(morgan("dev"));
 app.use(express.json());
 // Configure CORS to allow credentials
 app.use(cors({
-    origin: 'https://notes-manager-aemh.onrender.com/',  // Your frontend URL
+    origin: 'https://notes-manager-aemh.onrender.com',  // Your frontend URL
     credentials: true,
 }));
 app.use(session({
