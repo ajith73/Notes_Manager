@@ -19,10 +19,13 @@ app.use(cors({
     origin: 'https://notes-manager-aemh.onrender.com',  // Your frontend URL
     credentials: true,
 }));
+app.set("trust proxy", 1);
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    proxy: true, // Required for Heroku & Digital Ocean (regarding X-Forwarded-For)
+    name: 'MyCoolWebAppCookieName', // This needs to be unique per-host.
     cookie: {
       maxAge: 60 * 60 * 1000, // Example: 1 hour
       secure: true, // Ensure secure cookie in HTTPS
