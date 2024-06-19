@@ -20,17 +20,18 @@ app.use(cors({
     credentials: true,
 }));
 app.use(session({
-    secret: env.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
-        maxAge: 60 * 60 * 1000,
+      maxAge: 60 * 60 * 1000, // Example: 1 hour
+      secure: true, // Ensure secure cookie in HTTPS
+      sameSite: 'none', // Adjust sameSite attribute as needed
     },
-    rolling: true,
     store: MongoStore.create({
-        mongoUrl: env.MONGO_CONNECTION_STRING
+      mongoUrl: process.env.MONGO_CONNECTION_STRING,
     }),
-}));
+  }));
 
 app.get('/', (req: Request, res: Response) => {
     res.send("Backend server is running successfully.");

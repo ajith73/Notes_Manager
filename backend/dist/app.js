@@ -33,7 +33,6 @@ const users_1 = __importDefault(require("./routes/users"));
 const morgan_1 = __importDefault(require("morgan"));
 const http_errors_1 = __importStar(require("http-errors"));
 const express_session_1 = __importDefault(require("express-session"));
-const validateEnv_1 = __importDefault(require("./util/validateEnv"));
 const connect_mongo_1 = __importDefault(require("connect-mongo"));
 const auth_1 = require("./middleware/auth");
 const cors_1 = __importDefault(require("cors"));
@@ -46,15 +45,16 @@ app.use((0, cors_1.default)({
     credentials: true,
 }));
 app.use((0, express_session_1.default)({
-    secret: validateEnv_1.default.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
         maxAge: 60 * 60 * 1000,
+        secure: true,
+        sameSite: 'none', // Adjust sameSite attribute as needed
     },
-    rolling: true,
     store: connect_mongo_1.default.create({
-        mongoUrl: validateEnv_1.default.MONGO_CONNECTION_STRING
+        mongoUrl: process.env.MONGO_CONNECTION_STRING,
     }),
 }));
 app.get('/', (req, res) => {
